@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow">SIGNAL & RISK WORKSPACE</div><h1>Market signals, clearly reviewed.</h1><p>Crypto signal timing and review in one place. Predictions are not generated from live market data yet.</p></section>
+<section class="metrics">
+  <article class="metric"><div>FIXED STAKE REFERENCE</div><strong>${{ '%.2f'|format(stake) }}</strong><small>Display only · no orders</small></article>
+  <article class="metric"><div>EXECUTION</div><strong class="blue">OFF</strong><small>Signal review only</small></article>
+  <article class="metric"><div>CRYPTO SIGNALS</div><strong>{{ signals|length }}</strong><small>In this browser session</small></article>
+</section>
+<section class="grid-two">
+  <article class="panel"><div class="panel-head"><div><div class="eyebrow">LATEST ACTIVITY</div><h2>Crypto signal queue</h2></div><a class="text-link" href="{{ url_for('signals') }}">Open desk →</a></div>
+    {% if signals %}<div class="signal-list">{% for s in signals[:4] %}<div class="signal-row"><div class="coin-icon">{{ s.pair.split('/')[0][:3] }}</div><div class="signal-main"><strong>{{ s.pair }} <span class="direction {{ s.direction|lower }}">{{ s.direction }}</span></strong><small>Entry <time data-localtime="{{ s.entry_at }}">{{ s.entry_at }}</time> · expires <time data-localtime="{{ s.expires_at }}">{{ s.expires_at }}</time></small></div><span class="badge warn">UNVERIFIED</span></div>{% endfor %}</div>{% else %}<div class="empty-state"><div class="empty-icon">⌁</div><strong>No signals in this session</strong><p>Paste a crypto pair, direction, and expiry to view its timing.</p><a class="button primary" href="{{ url_for('signals') }}">Add a signal</a></div>{% endif %}
+  </article>
+  <article class="panel"><div class="eyebrow">CURRENT STATUS</div><h2>What the app can validate</h2><div class="status-item"><span class="status-dot amber"></span><div><strong>Signal format</strong><small>Pair, direction, expiry · parsed locally</small></div><span class="badge good">READY</span></div><div class="status-item"><span class="status-dot gray"></span><div><strong>Live crypto prices</strong><small>No exchange feed configured</small></div><span class="badge neutral">OFFLINE</span></div><div class="status-item"><span class="status-dot gray"></span><div><strong>Telegram source</strong><small>No Telegram connection configured</small></div><span class="badge neutral">OFFLINE</span></div><div class="callout">The entry time shown is when you add a signal. It is not a market-based recommendation or a verified prediction.</div></article>
+</section>
+{% endblock %}

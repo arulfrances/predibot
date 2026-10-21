@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Crypto signals{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow">CRYPTO SIGNAL DESK</div><h1>Predictions & timing</h1><p>View a signal's pair, direction, suggested entry time, and stated expiry. This page never sends orders.</p></section>
+<section class="panel form-panel"><div class="panel-head"><div><div class="eyebrow">MANUAL SIGNAL IMPORT</div><h2>Paste a crypto signal</h2></div><span class="badge neutral">SESSION ONLY</span></div>
+  <form method="post" action="{{ url_for('signals') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label for="signal">Signal text</label><textarea id="signal" name="signal" maxlength="2000" placeholder="BTC/USD CALL 1m" required></textarea><div class="form-bottom"><span>Example: BTC/USD CALL 1m or ETHUSDT PUT 5m</span><button class="button primary" type="submit">Add to review queue <span>→</span></button></div></form>
+  <div class="callout warning">No Telegram reader, live crypto price feed, or news data is connected. Direction comes from the pasted message. Entry timing starts when you submit it, and each item stays UNVERIFIED.</div>
+</section>
+<section class="panel table-panel"><div class="panel-head"><div><div class="eyebrow">THIS BROWSER SESSION</div><h2>Review queue <span class="count">{{ signals|length }}</span></h2></div>{% if signals %}<form method="post" action="{{ url_for('clear_signals') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button subtle" type="submit">Clear list</button></form>{% endif %}</div>
+  {% if signals %}<div class="table-wrap"><table><thead><tr><th>CRYPTO PAIR</th><th>SIGNAL</th><th>SUGGESTED ENTRY</th><th>EXPIRY WINDOW</th><th>VALIDATION</th></tr></thead><tbody>{% for s in signals %}<tr><td class="pair">{{ s.pair }}</td><td><span class="direction {{ s.direction|lower }}">{{ s.direction }}</span></td><td><time data-localtime="{{ s.entry_at }}">{{ s.entry_at }}</time><small class="subcell">Immediate only if still fresh</small></td><td>{{ s.expiry_minutes }} min <small class="subcell">ends <time data-localtime="{{ s.expires_at }}">{{ s.expires_at }}</time></small></td><td><span class="badge warn">UNVERIFIED</span></td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state compact"><strong>Nothing here yet</strong><p>Paste a sample crypto signal above to see its timing.</p></div>{% endif %}
+</section>
+{% endblock %}

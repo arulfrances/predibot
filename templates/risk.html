@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Risk controls{% endblock %}
+{% block content %}
+<section class="page-heading"><div class="eyebrow">PROTECTION SETTINGS</div><h1>Risk controls</h1><p>Current Python-side guardrails, shown for transparency. The web signal desk does not submit trade proposals.</p></section>
+<section class="panel settings">{% for title, value, detail in [
+  ('Fixed stake reference', '$%.2f'|format(stake), 'Display reference only. No trades are placed.'),
+  ('Maximum stake share', '%.0f%%'|format(risk.max_stake_fraction * 100), 'Risk module limit for a hypothetical paper proposal.'),
+  ('Daily loss stop', '%.0f%%'|format(risk.max_daily_loss_fraction * 100), 'Risk module limit for a hypothetical paper proposal.'),
+  ('Maximum proposals per day', risk.max_trades_per_day, 'Daily proposal limit in the existing risk module.'),
+  ('Consecutive-loss stop', risk.max_consecutive_losses, 'Loss streak guard in the existing risk module.'),
+  ('Minimum payout', '%.0f%%'|format(risk.minimum_payout * 100), 'Legacy execution filter; not used to rank predictions.')
+] %}<div class="setting-row"><div><strong>{{ title }}</strong><small>{{ detail }}</small></div><span class="setting-value">{{ value }}</span></div>{% endfor %}</section>
+<div class="callout warning">Fixed-expiry options can lose the full stake. These displayed limits do not make any signal profitable and are not connected to a live trading account.</div>
+{% endblock %}

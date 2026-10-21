@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>{% block title %}Predibot{% endblock %} · Signal Desk</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="{{ url_for('overview') }}"><span class="brand-mark">P</span><span>PREDIBOT<small>SIGNAL DESK</small></span></a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav>
+        <a href="{{ url_for('overview') }}" class="{% if request.endpoint == 'overview' %}active{% endif %}"><span>◫</span> Overview</a>
+        <a href="{{ url_for('signals') }}" class="{% if request.endpoint in ['signals', 'clear_signals'] %}active{% endif %}"><span>⌁</span> Crypto signals</a>
+        <a href="{{ url_for('connections') }}" class="{% if request.endpoint == 'connections' %}active{% endif %}"><span>⇄</span> Connections</a>
+        <a href="{{ url_for('risk') }}" class="{% if request.endpoint == 'risk' %}active{% endif %}"><span>◇</span> Risk controls</a>
+      </nav>
+      <div class="sidebar-foot"><span class="status-dot"></span> SIGNAL REVIEW ONLY<small>No orders are placed</small></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><span>PERSONAL WORKSPACE</span><span class="mode-pill"><i></i> PAPER / REVIEW MODE</span></header>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+      <footer>Predibot is a signal review tool. Signals are unverified unless independently validated. No financial outcome is guaranteed.</footer>
+    </main>
+  </div>
+  <script>
+    document.querySelectorAll('[data-localtime]').forEach(el => {
+      const d = new Date(el.dataset.localtime);
+      el.textContent = new Intl.DateTimeFormat(undefined, {hour:'2-digit', minute:'2-digit', second:'2-digit', timeZoneName:'short'}).format(d);
+    });
+  </script>
+</body>
+</html>
